@@ -145,6 +145,10 @@ h1 em{font-style:normal;color:var(--accent)}
 .note{background:#fff6c9;color:#2a2200;border-radius:6px;padding:14px 16px;font-size:20px;font-weight:700;line-height:1.6;transform:rotate(-1deg);box-shadow:3px 4px 0 rgba(0,0,0,.35);margin-top:12px}
 .note b{font-size:26px;color:#b40000}
 .foot{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+.cert .cb{font-size:44px;line-height:1}
+.cert h2{letter-spacing:2px!important;font-size:clamp(28px,5vw,40px)!important;white-space:nowrap}
+.cph{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:8px}.cph canvas{width:80px;height:100px}
+.cdate{font-size:14px!important;color:var(--sub);margin-top:6px!important}
 .score{display:flex;gap:10px;justify-content:center;margin:14px 0 4px;flex-wrap:wrap}
 .score div{background:rgba(255,255,255,.06);border-radius:12px;padding:8px 14px;min-width:120px}
 .score small{display:block;font-size:13px;color:var(--sub)}
@@ -1252,12 +1256,15 @@ function unlock(i){
 function finalTimes(){ const ms=S.end-S.start, cut=(S.gems||0)*GEM_SEC*1000; return {ms,cut,fin:Math.max(0,ms-cut)}; }
 function showCert(){
   const T=finalTimes(), J=CM[S.job];
-  openModal(`<div class="cert"><h2>표 창 장</h2>
-    <p class="nm">${S.cls}반 ${S.grp}번 · ${J.em} ${J.name}<br>${esc(S.name)}</p>
-    <p>위 탐험가는 숫자 열쇠를 모두 찾아<br>샤를 박사의 연구소를 탈출하였기에 이 상장을 드립니다.</p>
+  openModal(`<div class="cert"><div class="cb">🎈</div><h2>열기구 띄우기 증명서</h2>
+    <div class="cph"><canvas id="certc" width="160" height="200"></canvas><p class="nm">${S.cls}반 ${S.grp}번 · ${J.em} ${J.name}<br>${esc(S.name)}</p></div>
+    <p>위 탐험가는 숫자 열쇠를 모두 찾아 잠금 장치 4개를 풀고<br>샤를 박사의 열기구를 하늘로 띄워 연구소를 탈출하였음을 증명합니다.</p>
     <div class="score"><div><small>탈출 시간</small><b>${fmt(T.ms)}</b></div><div><small>💎 다이아 ${S.gems||0}개</small><b>− ${fmt(T.cut)}</b></div><div class="fin"><small>최종 기록</small><b>${fmt(T.fin)}</b></div></div>
-    <p style="color:#ffb23f;font-weight:900;margin-top:12px">“압력이 일정할 때, 기체의 온도가 높아지면 부피가 일정하게 커진다.”<br>— 샤를 법칙</p></div>
-    <div class="foot"><button class="big" style="width:auto" id="cMy">📝 나의 게임 리뷰</button><button class="big2" id="cRev">📖 문제 복습</button><button class="big2" id="cAgain">🔄 다시 하기</button></div>`,root=>{
+    <p style="color:#ffb23f;font-weight:900;margin-top:12px">“압력이 일정할 때, 기체의 온도가 높아지면 부피가 일정하게 커진다.”<br>— 샤를 법칙</p>
+    <p class="cdate">${new Date(S.end).toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'})} · 샤를 박사의 열기구 연구소</p></div>
+    <div class="foot"><button class="big2" id="cSave">💾 증명서 저장하기</button><button class="big" style="width:auto" id="cMy">📝 나의 게임 리뷰</button><button class="big2" id="cRev">📖 문제 복습</button><button class="big2" id="cAgain">🔄 다시 하기</button></div>`,root=>{
+      const g=root.querySelector('#certc').getContext('2d'); g.setTransform(2,0,0,2,0,0); drawPersonAt(g,40,94,70,'down',0,false,J.color,J.id,'short',null);
+      root.querySelector('#cSave').onclick=saveCertImage;
       root.querySelector('#cMy').onclick=showSelfReview; root.querySelector('#cRev').onclick=showReview; root.querySelector('#cAgain').onclick=resetAll; });
 }
 const RV_LEARN=['기체를 가열하면 입자 운동이 빨라진다','가열해도 입자의 개수와 크기는 그대로다','온도가 일정하게 오르면 부피도 일정하게 커진다','생활 속 샤를 법칙 사례를 구별할 수 있다','샤를 법칙 그래프 모양을 안다'];
@@ -1309,9 +1316,46 @@ function showReport(){
       <div class="rrow top"><span>다음 목표</span><span class="rtxt">${R.next.length?R.next.map(i=>'○ '+RV_NEXT[i]).join('<br>'):'-'}</span></div>
       ${R.memo?`<div class="rrow top"><span>한 줄 소감</span><span class="rtxt">“${esc(R.memo)}”</span></div>`:''}
     </div>
-    <div class="foot"><button class="big2" id="rpEdit">✏️ 리뷰 고치기</button><button class="big2" id="rpSave">📷 이미지로 저장</button><button class="big2" id="rpCert">🏅 표창장</button></div>`,root=>{
+    <div class="foot"><button class="big2" id="rpEdit">✏️ 리뷰 고치기</button><button class="big2" id="rpSave">💾 리포트 저장하기</button><button class="big2" id="rpCert">🎈 증명서</button></div>`,root=>{
       const g=root.querySelector('#rpc').getContext('2d'); g.setTransform(2,0,0,2,0,0); drawPersonAt(g,40,94,70,'down',0,false,J.color,J.id,'short',null);
       root.querySelector('#rpEdit').onclick=showSelfReview; root.querySelector('#rpCert').onclick=showCert; root.querySelector('#rpSave').onclick=saveReportImage; });
+}
+function downloadCanvas(c,name){ const a=document.createElement('a'); a.download=name; a.href=c.toDataURL('image/png'); document.body.appendChild(a); a.click(); a.remove(); sfx('ok'); }
+function saveCertImage(){
+  const T=finalTimes(), J=CM[S.job], W=1400, Hh=990, c=document.createElement('canvas'); c.width=W; c.height=Hh; const g=c.getContext('2d');
+  const F=(w,sz)=>`${w} ${sz}px 'Noto Sans KR', sans-serif`;
+  const bg=g.createLinearGradient(0,0,0,Hh); bg.addColorStop(0,'#1d2a5c'); bg.addColorStop(1,'#0b1020'); g.fillStyle=bg; g.fillRect(0,0,W,Hh);
+  for(let i=0;i<120;i++){ g.fillStyle=`rgba(255,255,255,${0.15+Math.random()*0.35})`; g.fillRect(Math.random()*W,Math.random()*Hh*0.6,2,2); }
+  g.strokeStyle='#ffb23f'; g.lineWidth=8; g.strokeRect(30,30,W-60,Hh-60); g.lineWidth=2; g.strokeRect(48,48,W-96,Hh-96);
+  // 열기구 그림
+  const bx=1210, by=215, rx=78, ry=96;
+  g.strokeStyle='#ffffff'; g.lineWidth=3; g.beginPath(); g.moveTo(bx-40,by+80); g.lineTo(bx-26,by+140); g.moveTo(bx+40,by+80); g.lineTo(bx+26,by+140); g.stroke();
+  g.fillStyle='#ff8a1f'; g.beginPath(); g.ellipse(bx,by,rx,ry,0,0,Math.PI*2); g.fill();
+  g.save(); g.beginPath(); g.ellipse(bx,by,rx,ry,0,0,Math.PI*2); g.clip(); g.fillStyle='#ffffff'; g.fillRect(bx-rx,by-14,rx*2,28); g.fillStyle='#e23b3b'; g.fillRect(bx-rx,by+40,rx*2,18); g.restore();
+  drawPersonAt(g,bx,by+168,46,'down',0,false,J.color,J.id,'short',null);
+  g.fillStyle='#8a5a2b'; g.fillRect(bx-32,by+140,64,40);
+  // 제목
+  g.textAlign='center'; g.fillStyle='#ffb23f'; g.font=F(900,32); g.fillText('🔑 숫자 열쇠 방탈출 · 샤를 법칙',W/2-90,125);
+  g.fillStyle='#ffffff'; g.font=F(900,84); g.fillText('열기구 띄우기 증명서',W/2-90,225);
+  // 캐릭터와 이름
+  drawPersonAt(g,250,560,230,'down',0,false,J.color,J.id,'short',null);
+  g.textAlign='left'; g.fillStyle='#a9b4dc'; g.font=F(700,32); g.fillText(`${S.cls}반 ${S.grp}번 · ${J.em} ${J.name}`,420,330);
+  g.fillStyle='#ffffff'; g.font=F(900,72); g.fillText(S.name,420,415);
+  g.fillStyle='#eef2ff'; g.font=F(400,30);
+  g.fillText('위 탐험가는 숫자 열쇠를 모두 찾아',420,485);
+  g.fillText('잠금 장치 4개를 풀고 샤를 박사의 열기구를',420,530);
+  g.fillText('하늘로 띄워 연구소를 탈출하였음을 증명합니다.',420,575);
+  // 기록 상자
+  const box=(x,label,val,hi)=>{ g.fillStyle=hi?'rgba(255,178,63,.22)':'rgba(255,255,255,.07)'; g.fillRect(x,630,280,130); if(hi){ g.strokeStyle='#ffb23f'; g.lineWidth=4; g.strokeRect(x,630,280,130); }
+    g.textAlign='center'; g.fillStyle='#a9b4dc'; g.font=F(700,26); g.fillText(label,x+140,675); g.fillStyle=hi?'#ffb23f':'#ffffff'; g.font=F(900,hi?58:50); g.fillText(val,x+140,740); };
+  box(200,'탈출 시간',fmt(T.ms)); box(510,`💎 다이아 ${S.gems||0}개`,'− '+fmt(T.cut)); box(820,'최종 기록',fmt(T.fin),true);
+  g.textAlign='center'; g.fillStyle='#ffb23f'; g.font=F(900,30); g.fillText('“압력이 일정할 때, 기체의 온도가 높아지면 부피가 일정하게 커진다.”',W/2-60,825); g.font=F(700,26); g.fillText('— 샤를 법칙',W/2-60,862);
+  g.fillStyle='#a9b4dc'; g.font=F(700,26); g.fillText(`${new Date(S.end).toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'})}  ·  샤를 박사의 열기구 연구소`,W/2-60,912);
+  // 도장
+  g.save(); g.translate(1245,700); g.rotate(-0.18); g.strokeStyle='#e23b3b'; g.lineWidth=6; g.beginPath(); g.arc(0,0,64,0,Math.PI*2); g.stroke(); g.lineWidth=2; g.beginPath(); g.arc(0,0,54,0,Math.PI*2); g.stroke();
+  g.textAlign='center'; g.fillStyle='#e23b3b'; g.font=F(900,24); g.fillText('탈출',0,-6); g.fillText('성공',0,24); g.restore();
+  g.textAlign='right'; g.fillStyle='#6f7aa8'; g.font=F(400,20); g.fillText('Copyright 2026 엘레나',W-70,Hh-62);
+  downloadCanvas(c,`열기구증명서_${S.cls}반${S.grp}번_${S.name}.png`);
 }
 function saveReportImage(){
   const {T,R,room,once}=reportData(), J=CM[S.job];
@@ -1338,7 +1382,7 @@ function saveReportImage(){
   line('다음 목표:'); (R.next.length?R.next:[-1]).forEach(i=>line('   '+(i<0?'-':'○ '+RV_NEXT[i])));
   if(R.memo) line(`한 줄 소감: “${R.memo}”`);
   g.fillStyle='#6f7aa8'; g.font=F(400,20); g.fillText('Copyright 2026 엘레나',W-260,Hh-40);
-  const a=document.createElement('a'); a.download=`게임리포트_${S.cls}반${S.grp}번_${S.name}.png`; a.href=c.toDataURL('image/png'); document.body.appendChild(a); a.click(); a.remove();
+  downloadCanvas(c,`게임리포트_${S.cls}반${S.grp}번_${S.name}.png`);
 }
 function showReview(){
   const s1=ORDER.map(r=>`<div class="it">${RM[r].dot} ${C.s1[r].q}<br>→ <b>${C.s1[r].choices[C.s1[r].ans]}</b> · ${C.s1[r].explain}</div>`).join('');
@@ -1348,7 +1392,7 @@ function showReview(){
     <h3>📏 2. 측정실</h3><div class="it">측정 ① ${G.m.T1} °C → ${G.m.V1} mL, 측정 ② ${G.m.T2} °C → ${G.m.V2} mL, ${G.m.TQ} °C → <b>${G.m.ans} mL</b></div><div class="it">💡 ${lockExplain(1)}</div>
     <h3>🃏 3. 사례 연구실</h3>${s3}
     <h3>🎈 4. 옥상</h3><div class="viz">${graphSVG('line','C','#4cd97b')}</div><div class="it">💡 ${C.l4.explain}</div></div>
-    <div class="foot">${S.end?'<button class="big2" id="rBack">🏅 표창장 보기</button>':''}</div>`,root=>{ const b=root.querySelector('#rBack'); if(b) b.onclick=showCert; });
+    <div class="foot">${S.end?'<button class="big2" id="rBack">🎈 증명서 보기</button>':''}</div>`,root=>{ const b=root.querySelector('#rBack'); if(b) b.onclick=showCert; });
 }
 function resetAll(){
   openModal(`<div class="mt">처음부터 다시 할까요?</div><p class="ms">이 크롬북의 진행 기록이 모두 지워져요.</p>
