@@ -34,23 +34,31 @@ input{font-family:inherit}
 .ovs{font-size:13px;color:var(--sub);margin-bottom:10px}
 @media (max-height:520px){ .ovc{padding:8px 12px;width:min(640px,100%)} .ovt{font-size:15px} .ovp{font-size:13px;margin:2px 0} .ovs{display:none} #ovGo{padding:8px;font-size:16px} #ov{bottom:6px} }
 #mission b{color:var(--accent)}
-#prompt{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--accent);color:#231600;font-weight:900;font-size:20px;padding:12px 22px;border-radius:999px;z-index:6;box-shadow:0 6px 24px rgba(255,178,63,.35);white-space:nowrap;cursor:pointer}
+#prompt{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--accent);color:#231600;font-weight:900;font-size:20px;padding:12px 22px;border-radius:999px;z-index:6;box-shadow:0 6px 24px rgba(255,178,63,.35);white-space:nowrap;pointer-events:none}
 #rotateHint{position:fixed;bottom:200px;right:10px;background:rgba(77,163,255,.18);border:1px solid var(--b);border-radius:10px;padding:6px 10px;font-size:13px;z-index:5}
 #copy{position:fixed;right:10px;bottom:2px;font-size:11px;color:#6f7aa8;z-index:4;pointer-events:none}
 
 /* touch pad */
-#pad{position:fixed;left:16px;bottom:16px;width:170px;height:170px;border-radius:50%;z-index:6;
-  background:radial-gradient(circle at 50% 35%,#2a3670 0%,#161d3d 72%);border:2px solid #3d4d92;
-  box-shadow:0 8px 24px rgba(0,0,0,.45),inset 0 2px 10px rgba(255,255,255,.07)}
-#pad::after{content:'';position:absolute;left:50%;top:50%;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;background:#0f1530;border:2px solid #3d4d92;pointer-events:none}
-#pad button{position:absolute;width:52px;height:52px;border-radius:50%;background:rgba(77,163,255,.14);border:none;color:#dfe6ff;font-size:22px;line-height:52px;padding:0;transition:background .12s,transform .12s}
-#pad button:hover{background:rgba(77,163,255,.28)}
-#pad button:active,#pad button.on{background:var(--accent);color:#231600;transform:scale(.92)}
-#pu{left:57px;top:6px}#pd{left:57px;bottom:6px}#pl{left:6px;top:57px}#pr{right:6px;top:57px}
-#act{position:fixed;right:18px;bottom:22px;width:84px;height:84px;border-radius:50%;background:rgba(255,178,63,.92);color:#231600;font-size:30px;font-weight:900;z-index:6;border:3px solid #ffe2b0}
-#act small{display:block;font-size:12px;margin-top:-4px}
+#pad{position:fixed;left:18px;bottom:18px;width:176px;height:176px;border-radius:50%;z-index:6;touch-action:none;
+  background:radial-gradient(circle at 50% 40%,#fffaf0 0%,#f7ecd6 70%,#ecdcbc 100%);
+  box-shadow:0 8px 0 #d8c39b,0 14px 28px rgba(0,0,0,.35),inset 0 2px 6px rgba(255,255,255,.9)}
+#pad .ar{position:absolute;width:0;height:0;border:11px solid transparent;opacity:.75;pointer-events:none}
+#pad .au{left:calc(50% - 11px);top:16px;border-bottom:15px solid #c9a46a;border-top:0}
+#pad .ad{left:calc(50% - 11px);bottom:16px;border-top:15px solid #c9a46a;border-bottom:0}
+#pad .al{top:calc(50% - 11px);left:16px;border-right:15px solid #c9a46a;border-left:0}
+#pad .arr{top:calc(50% - 11px);right:16px;border-left:15px solid #c9a46a;border-right:0}
+#knob{position:absolute;left:50%;top:50%;width:72px;height:72px;margin:-36px 0 0 -36px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle at 40% 32%,#fffdf6 0%,#f3e2c0 55%,#dcc092 100%);
+  box-shadow:0 6px 0 #c9ab78,0 10px 16px rgba(0,0,0,.25),inset 0 2px 4px rgba(255,255,255,.9);transition:transform .12s}
+#pad.on #knob{transition:none}
+#act{position:fixed;right:22px;bottom:26px;width:96px;height:96px;border-radius:50%;z-index:6;color:#4a3300;
+  background:radial-gradient(circle at 40% 32%,#ffe38a 0%,#ffc93c 60%,#f2b01e 100%);border:4px solid #fff6dc;
+  box-shadow:0 8px 0 #d99a12,0 14px 24px rgba(0,0,0,.35);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:transform .08s,box-shadow .08s}
+#act b{font-size:40px;line-height:1;font-weight:900}
+#act small{font-size:11px;font-weight:900;margin-top:2px}
+#act:active{transform:translateY(6px);box-shadow:0 2px 0 #d99a12,0 6px 12px rgba(0,0,0,.3)}
 #pad,#act{display:none}
-@media (any-pointer:coarse){#pad,#act{display:block}}
+@media (any-pointer:coarse){#pad{display:block} #act{display:flex} #prompt{bottom:auto;top:calc(100% - 270px)}}
 
 /* overlay screens */
 .screen{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 20%,#1d2a5c 0%,#0b1020 70%);overflow:auto;padding:16px}
@@ -106,6 +114,36 @@ h1 em{font-style:normal;color:var(--accent)}
 @media (max-width:760px){ .outfits{grid-template-columns:repeat(4,1fr)} .outfits.jobs{grid-template-columns:repeat(5,1fr)} .ofit .jd{display:none} }
 @media (max-width:420px){ .outfits.jobs{grid-template-columns:repeat(3,1fr)} }
 @media (max-width:480px){ .modes{grid-template-columns:1fr} }
+/* 화면 크기 맞춤 */
+.card.wide{display:grid;grid-template-columns:1fr 1.05fr;gap:30px;align-items:center;width:1180px;max-width:none}
+.card.wide h1{font-size:46px}
+.card.wide .lead{font-size:18px}
+.card.wide .rulebox .rt{font-size:22px}
+.card.wide .keysteps.kbig{flex-wrap:wrap;justify-content:flex-start}
+.card.wide .rs{font-size:15px}
+.card.wide .ofit canvas{width:80px;height:104px}
+.screen.fit{overflow:hidden}
+@media (max-width:899px),(max-aspect-ratio:115/100){ #start{padding-top:60px;align-items:flex-start} }
+/* 플라스크 시뮬레이션: 한 번만 재생 */
+.cnb{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}.cnb .flkr{margin:4px 0 0}.flkr:disabled{opacity:.5}
+.flkw{position:relative}
+.flkr{display:block;margin:4px auto 0;background:#0f1530;color:var(--text);border:2px solid var(--line);border-radius:999px;padding:5px 14px;font-size:14px;font-weight:700}
+.flkr:hover{border-color:var(--accent)}
+.flk{display:block;margin:0 auto}
+.flk .fk{animation:fkDown 4.5s ease-in-out 0.4s 1 both}
+.flk .full{transform-origin:100px 18px;transform-box:view-box;animation:blUp 4.5s ease-in-out 0.4s 1 both}
+.flk .limp{animation:limp 4.5s ease-in-out 0.4s 1 both}
+.flk .wv{animation:wv 1.6s ease-in-out infinite}
+.flk.done .fk,.flk.done .full,.flk.done .limp{animation:none}
+.flk.done .fk{transform:translateY(0)} .flk.done .full{transform:scale(1);opacity:1} .flk.done .limp{opacity:0}
+@keyframes fkDown{0%{transform:translateY(-40px)}35%,100%{transform:translateY(0)}}
+@keyframes blUp{0%,40%{transform:scale(.25);opacity:0}50%{opacity:1}100%{transform:scale(1);opacity:1}}
+@keyframes limp{0%,40%{opacity:1}52%,100%{opacity:0}}
+@keyframes wv{0%,100%{opacity:.3;transform:translateY(4px)}50%{opacity:.9;transform:translateY(-4px)}}
+/* 전체화면 */
+.fsb{position:fixed;top:12px;right:12px;z-index:25;background:var(--accent);color:#231600;font-weight:900;font-size:16px;padding:10px 16px;border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,.4)}
+#bFull{background:rgba(255,178,63,.22);border-color:var(--accent)}
+#fsToast{position:fixed;left:50%;top:70px;transform:translateX(-50%);z-index:40;background:#141b33;border:2px solid var(--accent);border-radius:12px;padding:10px 16px;font-size:14px;font-weight:700;max-width:calc(100vw - 24px);text-align:center}
 /* modal */
 #modal{position:fixed;inset:0;z-index:15;background:rgba(5,8,18,.72);display:flex;align-items:center;justify-content:center;padding:14px}
 #mbox{background:var(--panel);border:1px solid var(--line);border-radius:18px;width:min(820px,100%);max-height:calc(100vh - 28px);overflow:auto;padding:22px 24px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.6)}
@@ -193,11 +231,8 @@ h1 em{font-style:normal;color:var(--accent)}
 body.ovmode #pad, body.ovmode #act{visibility:hidden}
 @media (max-width:430px){ #bReset{display:none} #locks{display:none} .chip,.hbtn{padding:4px 5px;font-size:11px} #locks span{width:13px} #hud{gap:3px} }
 @media (max-width:820px),(max-height:680px){
-  #pad{width:132px;height:132px}
-  #pad button{width:40px;height:40px;line-height:40px;font-size:17px}
-  #pu{left:44px;top:5px}#pd{left:44px;bottom:5px}#pl{left:5px;top:44px}#pr{right:5px;top:44px}
-  #pad::after{width:30px;height:30px;margin:-15px 0 0 -15px}
-  #act{width:68px;height:68px;font-size:24px}
+  #pad{width:140px;height:140px} #knob{width:58px;height:58px;margin:-29px 0 0 -29px}
+  #act{width:78px;height:78px} #act b{font-size:32px}
 }
 @media (max-width:700px){
   .roles{grid-template-columns:repeat(2,1fr)}
@@ -234,15 +269,17 @@ body.ovmode #pad, body.ovmode #act{visibility:hidden}
 </div></div>
 <div id="prompt" class="hidden"></div>
 <div id="pad" class="hidden">
-  <button id="pu" data-k="up">▲</button><button id="pl" data-k="left">◀</button>
-  <button id="pr" data-k="right">▶</button><button id="pd" data-k="down">▼</button>
+  <i class="ar au"></i><i class="ar ad"></i><i class="ar al"></i><i class="ar arr"></i>
+  <div id="knob"></div>
 </div>
-<button id="act" class="hidden">🖐<small>살펴보기</small></button>
+<button id="act" class="hidden"><b>E</b><small>살펴보기</small></button>
 <div id="copy">Copyright 2026 엘레나</div>
 
+<button id="fsBtn" class="fsb">⛶ 전체화면</button>
+<div id="fsToast" class="hidden"></div>
 <!-- 시작 화면 -->
 <div class="screen" id="start">
-  <div class="card">
+  <div class="card" id="startCard"><div class="sl">
     <div style="font-size:15px;color:var(--accent);font-weight:700">🔑 숫자 열쇠 방탈출 · 샤를 법칙</div>
     <h1>샤를 박사의 <em>열기구 연구소</em></h1>
     <p class="lead">연구소에 갇혀 버렸다! 옥상의 열기구를 띄워야 탈출할 수 있다.</p>
@@ -250,7 +287,7 @@ body.ovmode #pad, body.ovmode #act{visibility:hidden}
       <div class="rt">🔑 이 방탈출은 <b>숫자 열쇠</b>를 찾아야 풀려요!</div>
       <div class="keysteps kbig"><span>📍 단서대 문제 풀기</span><i>→</i><span>🔑 숫자 열쇠 얻기</span><i>→</i><span>🔒 잠금 장치에 숫자 넣기</span><i>→</i><span>🚪 문 열림</span></div>
       <div class="rs">방마다 잠금 장치가 하나씩 있어요. 단서를 보고 <b>알맞은 숫자</b>를 넣어야만 문이 열려요. 문제를 맞히면 💎 다이아도 얻어요. 💎 1개마다 탈출 시간에서 <b>10초</b>를 빼 줘요!</div>
-    </div>
+    </div></div><div class="sr">
     <div class="row">
       <div class="field"><label>반</label><select id="iClass"></select></div>
       <div class="field"><label>번호</label><select id="iGroup"></select></div>
@@ -262,7 +299,7 @@ body.ovmode #pad, body.ovmode #act{visibility:hidden}
     <div class="muted" id="startHint" style="margin-top:6px">이름을 쓰고 캐릭터를 고르세요</div>
     <div style="display:flex;justify-content:center;margin-top:10px"><button class="big2 hidden" id="bContinue">이어서 하기</button></div>
     <div class="muted">Copyright 2026 엘레나 · 기록은 이 크롬북 안에만 저장돼요</div>
-  </div>
+  </div></div>
 </div>
 
 <!-- 모달 -->
@@ -285,7 +322,7 @@ const C = (function(s){
   const b = atob(s.split('').reverse().join(''));
   const u = new Uint8Array(b.length); for(let i=0;i<b.length;i++) u[i]=b.charCodeAt(i);
   return JSON.parse(new TextDecoder().decode(u));
-})('=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');
+})('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');
 const H = {"l1":["1mcos5y","1mcos6r","1mcos7u","1mcos8j"],"l2":"7sqmcg","l3":["1mcotu9","1mcotv7","1mcotsi","1mcottd"],"l4":"884eaf","tc":"ahr6rc"};
 const SALT = 'charles-escape-2026';
 function hs(s){let x=5381;for(const ch of s){x=((x*33)^ch.charCodeAt(0))>>>0;}return x.toString(36);}
@@ -511,6 +548,16 @@ function auTick(){
     AU.next+=60/S0.bpm/2; AU.step++;
   }
 }
+/* 동전이 유리병 입구에 부딪히는 '딸깍' 소리: 금속의 맑은 배음 + 짧은 충격음 */
+function coinTink(t,amp){
+  const c=AU.ctx, B=AU.sfx, j=1+(Math.random()-.5)*0.06;
+  [[4600,0.045,0.30],[7150,0.032,0.20],[10300,0.022,0.12]].forEach(([f,d,v])=>{
+    const o=c.createOscillator(), g=c.createGain(); o.type='sine'; o.frequency.value=f*j;
+    g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(v*amp,t+0.001); g.gain.exponentialRampToValueAtTime(0.0001,t+d);
+    o.connect(g); g.connect(B); o.start(t); o.stop(t+d+0.02); });
+  const n=c.createBufferSource(), f=c.createBiquadFilter(), g=c.createGain(); n.buffer=AU.noise; f.type='highpass'; f.frequency.value=6000; f.Q.value=0.7;
+  g.gain.setValueAtTime(0.35*amp,t); g.gain.exponentialRampToValueAtTime(0.0001,t+0.012); n.connect(f); f.connect(g); g.connect(B); n.start(t); n.stop(t+0.03);
+}
 function setTheme(i){ if(AU.theme!==i){ AU.theme=i; AU.step=0; } }
 function sfx(kind){
   if(!AU.ctx || AU.mode==='off') return; const t=AU.ctx.currentTime+0.01, B=AU.sfx;
@@ -518,6 +565,7 @@ function sfx(kind){
   else if(kind==='no'){ tone(t,52,0.18,'square',0.18,B,false); tone(t+0.18,47,0.3,'square',0.18,B,false); }
   else if(kind==='open'){ tone(t,79,0.12,'sine',0.25,B,false); tone(t+0.06,86,0.18,'sine',0.2,B,false); }
   else if(kind==='gem'){ [88,93,100].forEach((n,i)=>tone(t+i*0.05,n,0.25,'sine',0.25,B,true)); }
+  else if(kind==='tick'){ coinTink(t,1); coinTink(t+0.06+Math.random()*0.015,0.35); }
   else if(kind==='click'){ tone(t,88,0.06,'triangle',0.2,B,false); }
   else if(kind==='step'){ hat(t,0.06,B); }
   else if(kind==='unlock'){ [60,64,67,72,76,79].forEach((n,i)=>tone(t+i*0.07,n,0.35,'triangle',0.3,B,false)); tone(t+0.45,84,0.8,'sine',0.25,B,false); }
@@ -638,8 +686,9 @@ function makeGame(seed){
   const shuffle=a=>{ for(let i=a.length-1;i>0;i--){ const j=ri(i+1); [a[i],a[j]]=[a[j],a[i]]; } return a; };
   const d1={}; ORDER.forEach(r=>d1[r]=ri(10));
   const k=1+ri(2), T1=10*(1+ri(3)), T2=T1+10, TQ=T2+10*(2+ri(3));
-  const V=T=>k*(273+T);
-  const m={T1,T2,TQ,V1:V(T1),V2:V(T2),ans:V(TQ),step:10*k,k};
+  // 0 °C에서 27.3 mL인 공기: 1 °C 오를 때마다 0.1 mL씩 늘어나요 (60 mL 주사기 안에 들어가는 값)
+  const V=T=>(27.3+0.1*T).toFixed(1);
+  const m={T1,T2,TQ,V1:V(T1),V2:V(T2),ans:V(TQ),step:1,k:1};
   const pool=shuffle(ORDER.flatMap(r=>C.s3[r]));
   const cards={}; ORDER.forEach((r,i)=>cards[r]=pool.slice(i*3,i*3+3));
   const code3=ORDER.map(r=>cards[r].filter(c=>c.ox).length);
@@ -705,7 +754,7 @@ const player={x:1.8,y:5,dir:'right',phase:0,moving:false};
 let target=null, stuck=0, lastStep=0; const GEMPOP=[];
 function addGems(n){ S.gems=(S.gems||0)+n; save(); GEMPOP.push({t:0,n}); sfx('gem'); const el=$('gems'); el.textContent='💎 '+S.gems; el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); }
 const doorAnim=[0,0,0];
-const cam={x:RW/2}; let scale=20, roomScale=40, ovScale=12;
+const cam={x:RW/2,y:RH/2}; let scale=20, roomScale=40, ovScale=12;
 const view={top:90,h:600};
 let overview=false, ovT=0; const GAP=1.2; let ovGrid={cols:4,rows:1}, ovCY=300;
 const THEME=[
@@ -733,6 +782,7 @@ function build(){
 }
 function padShown(){ const p=$('pad'); return getComputedStyle(p).display!=='none'; }
 function resize(){
+  fitHud();
   const dpr=Math.min(devicePixelRatio||1,2), W=innerWidth, H=innerHeight;
   cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr); cv.style.width=W+'px'; cv.style.height=H+'px'; cx.setTransform(dpr,0,0,dpr,0,0);
   const mb=$('mission').getBoundingClientRect();
@@ -741,15 +791,10 @@ function resize(){
   let bottom=H-4;
   if(portrait && pad) bottom=pr.top-8;
   view.h=bottom-view.top;
-  let sc=Math.min(W/(RW+0.4),view.h/(RH+0.4));
+  const fit=Math.min(W/(RW+0.4),view.h/(RH+0.4));
+  let sc;
   if(portrait) sc=Math.min(view.h/(RH+0.4), W/(RW*0.5)); // 세로 화면: 방 높이를 꽉 채우고 좌우는 따라가기
-  else if(pad){
-    const roomLeft=W/2-(RW/2+0.2)*sc, roomBottom=view.top+view.h/2+(RH/2+0.2)*sc;
-    if(roomLeft<pr.right+6 && roomBottom>pr.top-6){
-      const scH=(W/2-pr.right-6)/(RW/2+0.2), h2=pr.top-6-view.top, scV=Math.min(W/(RW+0.4),h2/(RH+0.4));
-      if(scV>=scH){ sc=scV; view.h=h2; } else sc=scH;
-    }
-  }
+  else { const cover=Math.max(W/(RW+0.7),view.h/(RH+0.2)); sc=Math.min(cover,fit*1.35,W/(RW+0.7)); } // 가로 화면: 빈 곳 없이 꽉 채우고 넘치는 쪽은 따라가기
   roomScale=sc;
   const card=$('ov').querySelector('.ovc').getBoundingClientRect();
   const ovBottom=(card.height? card.top : H)-8, ovH=ovBottom-view.top;
@@ -764,9 +809,9 @@ function fitMission(){
   while(m.scrollWidth>m.clientWidth && f>10){ f-=0.5; m.style.fontSize=f+'px'; }
 }
 const SX=x=>innerWidth/2+(x-cam.x)*scale;
-const SY=y=>view.top+view.h/2+(y-RH/2)*scale;
+const SY=y=>view.top+view.h/2+(y-cam.y)*scale;
 const WX=sx=>(sx-innerWidth/2)/scale+cam.x;
-const WY=sy=>(sy-view.top-view.h/2)/scale+RH/2;
+const WY=sy=>(sy-view.top-view.h/2)/scale+cam.y;
 
 function applyRole(){
   const J=CM[S.job];
@@ -794,7 +839,7 @@ function onTap(e){
   if(!$('modal').classList.contains('hidden') || ending || overview) return;
   const x=WX(e.clientX), y=WY(e.clientY);
   let hit=null, best=1.2;
-  for(const it of interactables){ const d=Math.hypot(it.x-x,it.y-y); if(d<best){best=d;hit=it;} }
+  for(const it of interactables){ if(it.type==='lock'&&it.room<S.locks) continue; const d=Math.hypot(it.x-x,it.y-y); if(d<best){best=d;hit=it;} }
   if(hit) target={x:hit.x,y:hit.y,it:hit}; else target={x,y,it:null};
   stuck=0;
 }
@@ -814,6 +859,7 @@ function loop(ts){
   let vx=0, vy=0;
   if(canMove){
     vx=(keys.right?1:0)-(keys.left?1:0); vy=(keys.down?1:0)-(keys.up?1:0);
+    if(!vx&&!vy&&(joy.x||joy.y)){ vx=joy.x; vy=joy.y; }
     if(vx||vy) target=null;
     else if(target){
       let tx=target.x, ty=target.y;
@@ -846,6 +892,9 @@ function loop(ts){
   let tcx; const visW=innerWidth/roomScale;
   if(visW>=RW+0.4) tcx=room*RW+RW/2; else tcx=Math.max(room*RW+visW/2-0.2,Math.min(room*RW+RW-visW/2+0.2,player.x));
   cam.x+=(tcx-cam.x)*Math.min(1,dt*4);
+  const visH=view.h/roomScale; let tcy;
+  if(ovT>0.001 || visH>=RH+0.2) tcy=RH/2; else tcy=Math.max(visH/2-0.1,Math.min(RH-visH/2+0.1,player.y));
+  cam.y+=(tcy-cam.y)*Math.min(1,dt*4);
   for(let i=0;i<3;i++){ const tgt=S.locks>i?1:0; doorAnim[i]+=(tgt-doorAnim[i])*Math.min(1,dt*2.5); }
 
   near=null; let best=1.7;
@@ -998,11 +1047,21 @@ addEventListener('keydown',e=>{
 });
 addEventListener('keyup',e=>{ if(KM[e.code]) keys[KM[e.code]]=false; });
 addEventListener('blur',()=>{for(const k in keys)keys[k]=false;});
-document.querySelectorAll('#pad button').forEach(b=>{
-  const k=b.dataset.k;
-  b.addEventListener('pointerdown',e=>{keys[k]=true;b.classList.add('on');e.preventDefault();});
-  for(const ev of ['pointerup','pointerleave','pointercancel']) b.addEventListener(ev,()=>{keys[k]=false;b.classList.remove('on');});
-});
+/* 조이스틱: 누른 방향(대각선 포함)으로 이동 */
+const joy={x:0,y:0,id:null};
+(function(){
+  const pad=$('pad'), knob=$('knob');
+  const upd=e=>{ const r=pad.getBoundingClientRect();
+    const cx=r.left+r.width/2, cy=r.top+r.height/2, R=r.width/2*0.55;
+    let dx=e.clientX-cx, dy=e.clientY-cy;
+    const d=Math.hypot(dx,dy); if(d>R){ dx*=R/d; dy*=R/d; }
+    const m=Math.min(1,d/R); joy.x=d>R*0.18? dx/R : 0; joy.y=d>R*0.18? dy/R : 0;
+    knob.style.transform=`translate(${dx/(r.width/pad.offsetWidth)}px,${dy/(r.width/pad.offsetWidth)}px)`; };
+  pad.addEventListener('pointerdown',e=>{ joy.id=e.pointerId; pad.setPointerCapture(e.pointerId); pad.classList.add('on'); upd(e); e.preventDefault(); });
+  pad.addEventListener('pointermove',e=>{ if(joy.id===e.pointerId) upd(e); });
+  const end=e=>{ if(joy.id!==e.pointerId) return; joy.id=null; joy.x=joy.y=0; pad.classList.remove('on'); knob.style.transform=''; };
+  ['pointerup','pointercancel','lostpointercapture'].forEach(ev=>pad.addEventListener(ev,end));
+})();
 $('act').addEventListener('click',interact);
 $('prompt').addEventListener('click',interact);
 function interact(){
@@ -1013,7 +1072,33 @@ function interact(){
 
 /* ---------- 모달 ---------- */
 let modalCleanup=null;
-function openModal(html,onMount){ $('mcont').innerHTML=html; $('modal').classList.remove('hidden'); for(const k in keys)keys[k]=false; if(onMount) modalCleanup=onMount($('mcont'))||null; }
+function openModal(html,onMount){ $('mcont').innerHTML=html; $('modal').classList.remove('hidden'); for(const k in keys)keys[k]=false; if(onMount) modalCleanup=onMount($('mcont'))||null; fitModal(); }
+/* 화면 크기에 맞춰 글자·창 크기 키우기 */
+function fitModal(){
+  const b=$('mbox'); if($('modal').classList.contains('hidden')) return;
+  const W=innerWidth, H=innerHeight;
+  b.style.zoom=1; b.style.maxHeight='none'; b.style.width='820px';
+  if(W<700){ b.style.width=''; b.style.maxHeight=''; return; }
+  const nh=b.scrollHeight, nw=820;
+  let z=Math.min((W*0.94)/nw,(H*0.94)/nh); z=Math.max(0.8,Math.min(1.75,z));
+  b.style.zoom=z; b.style.maxHeight=(H*0.95/z)+'px';
+}
+function fitStart(){
+  const c=$('startCard'), scr=$('start'), W=innerWidth, H=innerHeight;
+  if(scr.classList.contains('hidden')) return;
+  const wide = W>=900 && W/H>=1.15;
+  c.classList.toggle('wide',wide); c.style.zoom=1;
+  if(wide){ const nw=1180, nh=c.offsetHeight; const z=Math.max(0.7,Math.min((W*0.95)/nw,(H*0.94)/nh,2)); c.style.zoom=z; scr.classList.toggle('fit',(nh*z)<=H); }
+  else { scr.classList.remove('fit'); const nw=Math.min(760,W-32); const z=W>=700? Math.max(1,Math.min((W*0.92)/760,(H*0.9)/c.offsetHeight,1.6)) : 1; c.style.zoom=z; }
+}
+function fitHud(){
+  const W=innerWidth, H=innerHeight, z=W>=1000? Math.max(1,Math.min(W/1366,H/768,1.7)) : 1;
+  ['hud','mission','ov','prompt','fsBtn'].forEach(id=>{ const e=$(id); if(e) e.style.zoom=z; });
+  const pz=W>=1000? Math.max(1,Math.min(W/1366,H/768,1.5)) : 1; ['pad','act'].forEach(id=>$(id).style.zoom=pz);
+}
+function fitAll(){ fitHud(); fitStart(); fitModal(); }
+addEventListener('resize',()=>{ fitAll(); });
+setTimeout(fitAll,0); if(document.fonts&&document.fonts.ready) document.fonts.ready.then(fitAll);
 function closeModal(){ if(modalCleanup){modalCleanup();modalCleanup=null;} $('modal').classList.add('hidden'); }
 $('mclose').onclick=closeModal;
 
@@ -1100,21 +1185,49 @@ function st2(role){
   openModal(head(1,role,'물중탕 속 주사기를 데우며 기체의 부피를 재는 실험이에요.')+body);
 }
 function measureSVG(temp,vol){
-  const lvl = 200-(temp/100)*150;
-  return `<svg viewBox="0 0 560 260" width="560" height="260" font-family="Noto Sans KR">
-   <rect x="80" y="110" width="260" height="130" rx="10" fill="#1f4f7a" opacity=".7" stroke="#8ac7ff" stroke-width="4"/>
-   <path d="M80 130 Q 210 120 340 130" stroke="#bfe3ff" stroke-width="3" fill="none"/>
-   <rect x="170" y="30" width="56" height="170" rx="6" fill="#e9eef8" opacity=".9" stroke="#fff" stroke-width="3"/>
-   ${(()=>{const top=vol?172-((vol/G.m.k-273)/100)*110:58; return `<rect x="176" y="${top}" width="44" height="${192-top}" fill="#ffd9a6" opacity=".7" ${vol?"":"stroke=\"#ff6b6b\" stroke-dasharray=\"6 5\" stroke-width=\"3\""}/><rect x="168" y="${top-12}" width="60" height="12" fill="#6f7aa8"/><rect x="192" y="6" width="12" height="${top-18}" fill="#6f7aa8"/>`})()}
-   ${[0,1,2,3,4,5,6].map(i=>`<line x1="170" y1="${190-i*22}" x2="184" y2="${190-i*22}" stroke="#334" stroke-width="2"/>`).join('')}
-   <text x="198" y="226" fill="#fff" font-size="16" text-anchor="middle">주사기</text>
-   <rect x="276" y="20" width="18" height="200" rx="9" fill="#e9eef8" stroke="#fff" stroke-width="2"/>
-   <rect x="280" y="${lvl}" width="10" height="${220-lvl}" fill="#ff4d4d"/><circle cx="285" cy="222" r="14" fill="#ff4d4d"/>
-   ${[0,20,40,60,80,100].map(v=>`<line x1="294" y1="${200-v/100*150}" x2="304" y2="${200-v/100*150}" stroke="#fff" stroke-width="2"/><text x="310" y="${206-v/100*150}" fill="#fff" font-size="13">${v}</text>`).join('')}
-   <text x="285" y="250" fill="#fff" font-size="14" text-anchor="middle">온도계(°C)</text>
-   <text x="440" y="80" fill="#ffb23f" font-size="30" font-weight="900" text-anchor="middle">${temp} °C</text>
-   <text x="440" y="130" fill="${vol?'#ffd23f':'#ff6b6b'}" font-size="30" font-weight="900" text-anchor="middle">${vol?vol+' mL':'? mL'}</text>
-   <text x="440" y="170" fill="#a9b4dc" font-size="15" text-anchor="middle">(압력 일정)</text>
+  const v=vol? parseFloat(vol):null, Y=x=>222-x/60*190;   // 60 mL 주사기 눈금
+  const py = v!=null? Y(v)-10 : Y(31)-10;
+  const lvl = 228-(temp/100)*170;
+  const dots=[[172,0.25],[192,0.55],[180,0.8],[200,0.35],[168,0.7],[188,0.15]].map(([x,f])=>`<circle cx="${x}" cy="${py+14+(224-py-16)*f}" r="4" fill="#ffb27a"/>`).join('');
+  const ticks=[];
+  for(let m=0;m<=60;m+=2){ const y=Y(m), big=m%10===0; ticks.push(`<line x1="${212}" y1="${y}" x2="${big?198:204}" y2="${y}" stroke="#e9f4ff" stroke-width="${big?2:1.2}"/>`); if(big&&m&&m<60) ticks.push(`<text x="216" y="${y+4}" fill="#e9f4ff" font-size="11">${m}${m===50?' mL':''}</text>`); }
+  // 돋보기
+  const LX=92, LY=38, LR=54, s=24;
+  let lens='';
+  if(v!=null){ const base=Math.round(v);
+    for(let m=base-3;m<=base+3;m+=0.5){ const y=LY+(v-m)*s, big=Math.abs(m-Math.round(m))<1e-6;
+      lens+=`<line x1="${LX+8}" y1="${y}" x2="${LX+(big?-8:0)}" y2="${y}" stroke="#e9f4ff" stroke-width="${big?2:1}"/>`;
+      if(big) lens+=`<text x="${LX+12}" y="${y+5}" fill="#e9f4ff" font-size="15" font-weight="700">${m}</text>`; }
+    lens=`<rect x="${LX-LR}" y="${LY}" width="${LR+8}" height="${LR}" fill="rgba(255,190,130,.35)"/><rect x="${LX-LR}" y="${LY-6}" width="${LR+8}" height="7" fill="#2f3446"/><line x1="${LX-LR}" y1="${LY}" x2="${LX+8}" y2="${LY}" stroke="#ffd23f" stroke-width="2"/>`+lens;
+  } else lens=`<text x="${LX}" y="${LY+12}" fill="#ff6b6b" font-size="36" font-weight="900" text-anchor="middle">?</text>`;
+  return `<svg viewBox="0 -118 560 408" width="560" height="408" font-family="Noto Sans KR">
+   <defs><clipPath id="lensc"><circle cx="${LX}" cy="${LY}" r="${LR-3}"/></clipPath></defs>
+   <rect x="60" y="118" width="300" height="160" rx="10" fill="#0e2a44" stroke="#8ac7ff" stroke-width="4"/>
+   <rect x="64" y="138" width="292" height="136" rx="6" fill="#ff7a59" opacity=".42"/>
+   <path d="M64 138 Q 210 130 356 138" stroke="#ffc2b0" stroke-width="3" fill="none"/>
+   <text x="345" y="266" fill="#fff" font-size="14" text-anchor="end" font-weight="700">물</text>
+   <rect x="156" y="30" width="56" height="200" rx="6" fill="rgba(230,240,255,.18)" stroke="#e9f4ff" stroke-width="3"/>
+   <rect x="132" y="24" width="104" height="9" rx="4" fill="#e9f4ff"/>
+   <rect x="160" y="${py+10}" width="48" height="${222-py-10}" fill="rgba(255,190,130,.28)" ${v!=null?'':'stroke="#ff6b6b" stroke-dasharray="6 5" stroke-width="2"'}/>
+   ${dots}${ticks.join('')}
+   <path d="M174 230 L194 230 L190 246 L178 246 Z" fill="#e9f4ff"/>
+   <rect x="170" y="246" width="28" height="18" rx="4" fill="#3b3b4a" stroke="#1d1d26" stroke-width="2"/>
+   <text x="232" y="266" fill="#fff" font-size="13">고무마개</text><line x1="200" y1="256" x2="228" y2="262" stroke="#fff" stroke-width="1.5"/>
+   <g opacity="${v!=null?1:.45}"><rect x="158" y="${py}" width="52" height="12" rx="3" fill="#2f3446"/>
+   <rect x="178" y="${py-164}" width="12" height="164" fill="#9aa6c8"/>
+   <rect x="138" y="${py-176}" width="92" height="13" rx="6" fill="#9aa6c8" stroke="#c7d0ea" stroke-width="2"/></g>
+   <line x1="${LX+LR*0.7}" y1="${LY+LR*0.7}" x2="158" y2="${py+10}" stroke="#ffd23f" stroke-width="1.5" stroke-dasharray="4 3"/>
+   <circle cx="${LX}" cy="${LY}" r="${LR}" fill="#0b1226" stroke="#ffd23f" stroke-width="5"/>
+   <g clip-path="url(#lensc)">${lens}</g>
+   <line x1="${LX-LR*0.72}" y1="${LY+LR*0.72}" x2="${LX-LR*1.05}" y2="${LY+LR*1.05}" stroke="#ffd23f" stroke-width="8" stroke-linecap="round"/>
+   <text x="${LX}" y="${LY-LR-8}" fill="#ffd23f" font-size="12" text-anchor="middle" font-weight="700">🔍 피스톤 눈금 확대</text>
+   <text x="300" y="-100" fill="#fff" font-size="14" text-anchor="middle">거꾸로 세운 60 mL 주사기 · 피스톤이 자유롭게 움직여요</text>
+   <rect x="296" y="40" width="18" height="200" rx="9" fill="#e9eef8" stroke="#fff" stroke-width="2"/>
+   <rect x="300" y="${lvl}" width="10" height="${240-lvl}" fill="#ff4d4d"/><circle cx="305" cy="242" r="14" fill="#ff4d4d"/>
+   ${[0,20,40,60,80,100].map(t=>`<line x1="314" y1="${228-t/100*170}" x2="324" y2="${228-t/100*170}" stroke="#fff" stroke-width="2"/><text x="328" y="${233-t/100*170}" fill="#fff" font-size="13">${t}</text>`).join('')}
+   <text x="440" y="90" fill="#ffb23f" font-size="32" font-weight="900" text-anchor="middle">${temp} °C</text>
+   <text x="440" y="140" fill="${v!=null?'#ffd23f':'#ff6b6b'}" font-size="32" font-weight="900" text-anchor="middle">${v!=null?vol+' mL':'? mL'}</text>
+   <text x="440" y="176" fill="#a9b4dc" font-size="15" text-anchor="middle">(압력 일정)</text>
   </svg>`;
 }
 function ruleSVG(){
@@ -1131,18 +1244,79 @@ function ruleSVG(){
 
 /* 방3: 사례 */
 function st3(role){
+  flaskPlayed=false;
   const cards=G.cards[role], sel=S.s3[role];
   const render=()=>`${head(2,role,'<b>온도 때문에</b> 기체의 부피가 변한 사례면 ○, 아니면 × 를 누르세요. 다 고르면 ○ 개수가 나와요.')}
-    <div class="cards">${cards.map((c,i)=>`<div class="oxc"><div class="e">${c.e}</div><div class="t">${c.t}</div>
+    <div class="cards">${cards.map((c,i)=>`<div class="oxc">${c.anim==="flask"?flaskSVG():c.anim==="coin"?coinSVG():`<div class="e">${c.e}</div>`}<div class="t">${c.t}</div>
       <div class="bt"><button data-i="${i}" data-v="1" class="${sel[i]===true?'onO':''}">○</button><button data-i="${i}" data-v="0" class="${sel[i]===false?'onX':''}">×</button></div></div>`).join('')}</div>
     <div class="cnt">${sel.every(v=>v!==null)?`○ 개수 (${RM[role].dot} 자리): <span class="key" style="background:${RM[role].color}">${sel.filter(v=>v).length}</span>`:'<span style="color:#a9b4dc">3장 모두 골라 주세요</span>'}</div>
     <p class="ms" style="text-align:center;margin-top:8px">○ 개수가 이 자리의 <b>숫자 열쇠</b>예요. 잠금 장치에서 틀리면 카드를 다시 살펴보세요. 언제든 바꿀 수 있어요.</p>`;
   openModal(render(),(root)=>{
-    const bind=()=>root.querySelectorAll('.bt button').forEach(b=>b.onclick=()=>{ sfx('click'); sel[+b.dataset.i]=b.dataset.v==='1'; if(sel.every(v=>v!==null)) S.notes['c3'+role]=1; save(); root.innerHTML=render(); bind(); });
+    const bind=()=>root.querySelectorAll('.bt button').forEach(b=>b.onclick=()=>{ sfx('click'); sel[+b.dataset.i]=b.dataset.v==='1'; if(sel.every(v=>v!==null)) S.notes['c3'+role]=1; save(); root.innerHTML=render(); bind(); fitModal(); });
     bind();
   });
 }
 
+function flaskSVG(){
+  const cls=flaskPlayed?"flk done":"flk"; flaskPlayed=true;
+  return `<div class="flkw"><svg class="${cls}" viewBox="0 -60 200 205" width="100%" style="max-height:170px">
+   <rect x="20" y="62" width="160" height="80" rx="8" fill="#0f1530" stroke="#8ac7ff" stroke-width="3"/>
+   <rect x="23" y="78" width="154" height="61" rx="5" fill="#ff7a59" opacity=".55"/>
+   <g class="wv">${[0,1,2].map(i=>`<path d="M${42+i*58} 70 q6 -8 0 -16 q-6 -8 0 -16" stroke="#ffb2a0" stroke-width="3" fill="none" opacity=".8"/>`).join('')}</g>
+   <text x="170" y="132" fill="#fff" font-size="11" text-anchor="end" font-weight="700">뜨거운 물</text>
+   <g class="fk">
+     <path d="M88 20 L88 52 L64 108 Q62 114 68 114 L132 114 Q138 114 136 108 L112 52 L112 20 Z" fill="rgba(200,230,255,.28)" stroke="#e9f4ff" stroke-width="3" stroke-linejoin="round"/>
+     <rect x="85" y="17" width="30" height="8" rx="2" fill="#ff4f8b"/>
+     <path class="limp" d="M88 18 Q86 8 96 6 Q110 4 118 12 Q126 20 124 30 Q122 36 117 33 Q116 24 110 20 Q104 17 112 18 Z" fill="#ff4f8b"/>
+     <g class="full"><path d="M93 18 Q70 -10 78 -34 Q86 -56 100 -56 Q114 -56 122 -34 Q130 -10 107 18 Z" fill="#ff4f8b"/>
+       <ellipse cx="90" cy="-36" rx="5" ry="9" fill="rgba(255,255,255,.45)"/></g>
+   </g>
+  </svg><button class="flkr" onclick="replayFlask(this)">↻ 다시 해보기</button></div>`;
+}
+let flaskPlayed=false;
+window.replayFlask=function(btn){ const svg=btn.parentElement.querySelector('.flk'); svg.classList.remove('done');
+  const els=svg.querySelectorAll('.fk,.full,.limp'); els.forEach(e=>e.style.animation='none'); void svg.getBoundingClientRect(); els.forEach(e=>e.style.animation=''); if(typeof sfx==='function') sfx('click'); };
+function coinSVG(){
+  return `<div class="flkw coinw"><svg class="cns" viewBox="0 -30 200 180" width="100%" style="max-height:170px">
+   <g class="tank" opacity="0"><rect x="20" y="62" width="160" height="80" rx="8" fill="#0f1530" stroke="#8ac7ff" stroke-width="3"/>
+     <rect x="23" y="78" width="154" height="61" rx="5" fill="#ff7a59" opacity=".55"/>
+     <g class="wv">${[0,1,2].map(i=>`<path d="M${42+i*58} 70 q6 -8 0 -16 q-6 -8 0 -16" stroke="#ffb2a0" stroke-width="3" fill="none" opacity=".8"/>`).join('')}</g>
+     <text x="170" y="132" fill="#fff" font-size="11" text-anchor="end" font-weight="700">뜨거운 물</text></g>
+   <rect class="table" x="30" y="134" width="140" height="8" rx="3" fill="#8a6a3a"/>
+   <g class="bt" transform="translate(0,22)">
+     <path d="M93 14 L93 34 Q78 40 78 54 L78 106 Q78 112 84 112 L116 112 Q122 112 122 106 L122 54 Q122 40 107 34 L107 14 Z" fill="#7a3f12" fill-opacity=".85" stroke="#c98a4b" stroke-width="2.5" stroke-linejoin="round"/>
+     <rect x="91" y="10" width="18" height="6" rx="2" fill="#a2652c"/>
+     <path d="M84 52 L84 100" stroke="rgba(255,255,255,.35)" stroke-width="4" stroke-linecap="round"/>
+     <g class="coin"><ellipse cx="100" cy="9" rx="15" ry="4.5" fill="#b8860b"/><ellipse cx="100" cy="7" rx="15" ry="4.5" fill="#ffd23f" stroke="#e0a800" stroke-width="1.5"/></g>
+     <g class="puff" opacity="0"><path d="M84 4 q-6 -4 -12 -2 M116 4 q6 -4 12 -2" stroke="#e9f4ff" stroke-width="2.5" fill="none" stroke-linecap="round"/></g>
+   </g>
+  </svg>
+  <div class="cnb"><button class="flkr" onclick="coinRun(this,'hot')">🔥 뜨거운 물에 넣기</button></div></div>`;
+}
+window.coinRun=function(btn,mode){
+  const w=btn.closest('.coinw'), svg=w.querySelector('svg');
+  const bt=svg.querySelector('.bt'), coin=svg.querySelector('.coin'), puff=svg.querySelector('.puff'), tank=svg.querySelector('.tank'), table=svg.querySelector('.table');
+  if(w._raf) cancelAnimationFrame(w._raf);
+  w.querySelectorAll('button').forEach(b=>b.disabled=true);
+  const hot=mode==='hot', jumps=hot?[2.0,2.9,3.6,4.2,4.7,5.2,5.7]:[2.6,3.8,4.8,5.7,6.5];
+  const dur=(hot?6.4:7.2); let t0=null; const played=new Set();
+  tank.setAttribute('opacity',0); table.setAttribute('opacity',1);
+  const step=ts=>{
+    if(t0==null) t0=ts; const t=(ts-t0)/1000;
+    let ty=22;
+    if(hot){ const sm=x=>x*x*(3-2*x), a=Math.min(1,t/0.6); tank.setAttribute('opacity',a); table.setAttribute('opacity',1-a);
+      ty = t<0.6 ? 22-52*sm(t/0.6) : 22-52*(1-sm(Math.min(1,(t-0.6)/0.9))); }
+    bt.setAttribute('transform',`translate(0,${ty})`);
+    let lift=0, rot=0, pf=0;
+    jumps.forEach((j,i)=>{ const d=t-j; if(d>=0&&!played.has(i)){ played.add(i); if(typeof sfx==='function') sfx('tick'); }
+      if(d>=0&&d<0.16){ const s=Math.sin(d/0.16*Math.PI); lift=Math.max(lift,s*4); rot=(i%2?-1:1)*s*9; pf=Math.max(pf,1-d/0.3); }
+      else if(d>=0.16&&d<0.3) pf=Math.max(pf,1-d/0.3); });
+    coin.setAttribute('transform',`translate(0,${-lift}) rotate(${rot} ${rot>0?85:115} 9)`); puff.setAttribute('opacity',pf);
+    if(t<dur) w._raf=requestAnimationFrame(step); else { w._raf=null; coin.setAttribute('transform',''); puff.setAttribute('opacity',0); w.querySelectorAll('button').forEach(b=>b.disabled=false);
+      w.querySelector('button').textContent='🔥 뜨거운 물에 다시 넣기'; }
+  };
+  w._raf=requestAnimationFrame(step);
+};
 /* 방4: 그래프 */
 function st4(role){
   S.notes['g'+role]=1; save();
@@ -1202,12 +1376,12 @@ function lk1(){
   });
 }
 function lk2(){
-  openModal(lockShell(2,'🔵 단서대 질문의 답(mL)을 넣으세요.',`<div class="single"><input inputmode="numeric" maxlength="4" id="ans2"> mL</div>`),root=>{
+  openModal(lockShell(2,'🔵 단서대 질문의 답(mL)을 넣으세요.',`<div class="single"><input inputmode="decimal" maxlength="5" id="ans2"> mL</div><p class="ms" style="text-align:center">소수점(.)까지 넣어요. 예) 30.3</p>`),root=>{
     const inp=root.querySelector('#ans2'); setTimeout(()=>inp.focus(),50);
-    inp.addEventListener('input',()=>inp.value=inp.value.replace(/\D/g,''));
+    inp.addEventListener('input',()=>inp.value=inp.value.replace(/[^0-9.]/g,''));
     root.querySelector('.submit').onclick=()=>{
       if(!inp.value) return;
-      if(inp.value===String(G.m.ans)) unlock(1); else wrong(root,2, S.fails[1]>=1?`<br><b>힌트:</b> ${G.m.T1} °C에서 ${G.m.T2} °C로 10 °C 오를 때 몇 mL 늘었나요? ${G.m.T2} °C에서 ${G.m.TQ} °C까지는 10 °C씩 몇 번 오르나요?`:'측정값 두 개를 비교해 보세요.');
+      if(Math.abs(parseFloat(inp.value)-parseFloat(G.m.ans))<0.001) unlock(1); else wrong(root,2, S.fails[1]>=1?`<br><b>힌트:</b> ${G.m.T1} °C에서 ${G.m.T2} °C로 10 °C 오를 때 몇 mL 늘었나요? ${G.m.T2} °C에서 ${G.m.TQ} °C까지는 10 °C씩 몇 번 오르나요?`:'측정값 두 개를 비교해 보세요.');
     };
   });
 }
@@ -1415,7 +1589,7 @@ function help(){
 }
 function enterGame(first){
   $('start').classList.add('hidden');
-  ['hud','mission','pad','act'].forEach(id=>$(id).classList.remove('hidden'));
+  ['hud','mission','pad','act'].forEach(id=>$(id).classList.remove('hidden')); $('fsBtn').classList.add('hidden');
   const go=()=>{
     useGame();
     if(!built) build();
@@ -1430,7 +1604,18 @@ function enterGame(first){
 }
 $('bHelp').onclick=()=>help();
 $('bReset').onclick=resetAll;
-$('bFull').onclick=()=>{ if(!document.fullscreenElement){ (document.documentElement.requestFullscreen||function(){}).call(document.documentElement); } else document.exitFullscreen(); };
+function isFS(){ return !!(document.fullscreenElement||document.webkitFullscreenElement); }
+function toggleFS(){
+  const el=document.documentElement;
+  try{
+    if(!isFS()){ const f=el.requestFullscreen||el.webkitRequestFullscreen; if(!f) throw 0; const r=f.call(el); if(r&&r.catch) r.catch(fsFail); }
+    else { const x=document.exitFullscreen||document.webkitExitFullscreen; x&&x.call(document); }
+  }catch(e){ fsFail(); }
+}
+function fsFail(){ const t=$('fsToast'); t.textContent='이 화면에서는 전체화면이 막혀 있어요. 크롬 주소창의 앱 주소로 직접 열면 돼요. (키보드 F11도 돼요)'; t.classList.remove('hidden'); clearTimeout(fsFail.tm); fsFail.tm=setTimeout(()=>t.classList.add('hidden'),4000); }
+function fsLabel(){ const on=isFS(); $('fsBtn').textContent=on?'⛶ 창 모드':'⛶ 전체화면'; $('bFull').innerHTML='⛶<span class="tx">'+(on?' 창 모드':' 전체화면')+'</span>'; setTimeout(()=>{ if(built) resize(); },120); }
+document.addEventListener('fullscreenchange',fsLabel); document.addEventListener('webkitfullscreenchange',fsLabel);
+$('bFull').onclick=toggleFS; $('fsBtn').onclick=toggleFS;
 function openOutfit(){
   let Gd=null, raf=0;
   openModal(`<div class="mt">캐릭터 바꾸기</div><div class="outfits jobs" id="of2"></div>
