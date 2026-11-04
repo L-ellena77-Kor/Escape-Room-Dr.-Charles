@@ -522,14 +522,19 @@ function drawPersonAt(g,X,Y,u,dir,phase,moving,color,cls,hair,pose){
 }
 
 /* ---------- 음악·효과음 (직접 연주, 음원 파일 없음) ---------- */
+const MUSIC_VOL=0.5;
 const AU={ctx:null,music:null,sfx:null,timer:null,step:0,next:0,mode:'all',theme:0,noise:null};
 try{ const m=localStorage.getItem('charles-sound'); if(m) AU.mode=m; }catch(e){}
 const SOUND_LABEL={all:'🔊',sfx:'🔈',off:'🔇'}, SOUND_TEXT={all:' 음악 켜짐',sfx:' 효과음만',off:' 소리 끔'};
 function auInit(){
   if(AU.ctx){ if(AU.ctx.state==='suspended') AU.ctx.resume(); return; }
   const A=window.AudioContext||window.webkitAudioContext; if(!A) return;
+  try{ if(navigator.audioSession) navigator.audioSession.type='playback'; }catch(e){}  // 아이폰 무음 스위치가 켜져 있어도 소리 나게
   try{ AU.ctx=new A(); }catch(e){ return; }
-  const c=AU.ctx, out=c.createGain(); out.gain.value=0.9; out.connect(c.destination);
+  if(AU.ctx.state!=='running') AU.ctx.resume().catch(()=>{});
+  const c=AU.ctx, out=c.createGain(); out.gain.value=1.0;
+  const comp=c.createDynamicsCompressor(); comp.threshold.value=-14; comp.knee.value=10; comp.ratio.value=4; comp.attack.value=0.004; comp.release.value=0.2;
+  out.connect(comp); comp.connect(c.destination);
   AU.music=c.createGain(); AU.sfx=c.createGain(); AU.music.connect(out); AU.sfx.connect(out);
   AU.delay=c.createDelay(); AU.delay.delayTime.value=0.33; const fb=c.createGain(); fb.gain.value=0.28; const wet=c.createGain(); wet.gain.value=0.35;
   AU.delay.connect(fb); fb.connect(AU.delay); AU.delay.connect(wet); wet.connect(AU.music);
@@ -537,7 +542,7 @@ function auInit(){
   applySound(); AU.next=c.currentTime+0.15; AU.timer=setInterval(auTick,25);
 }
 function applySound(){
-  if(AU.ctx){ const t=AU.ctx.currentTime; AU.music.gain.setTargetAtTime(AU.mode==='all'?0.32:0,t,0.15); AU.sfx.gain.setTargetAtTime(AU.mode==='off'?0:0.55,t,0.05); }
+  if(AU.ctx){ const t=AU.ctx.currentTime; AU.music.gain.setTargetAtTime(AU.mode==='all'?MUSIC_VOL:0,t,0.15); AU.sfx.gain.setTargetAtTime(AU.mode==='off'?0:0.55,t,0.05); }
   const b=document.getElementById('bSound'); if(b) b.innerHTML=SOUND_LABEL[AU.mode]+'<span class="tx">'+SOUND_TEXT[AU.mode]+'</span>';
 }
 function cycleSound(){ AU.mode={all:'sfx',sfx:'off',off:'all'}[AU.mode]; try{localStorage.setItem('charles-sound',AU.mode);}catch(e){} auInit(); applySound(); }
@@ -593,7 +598,10 @@ function sfx(kind){
   else if(kind==='unlock'){ [60,64,67,72,76,79].forEach((n,i)=>tone(t+i*0.07,n,0.35,'triangle',0.3,B,false)); tone(t+0.45,84,0.8,'sine',0.25,B,false); }
   else if(kind==='win'){ [[67,0],[67,0.15],[67,0.3],[72,0.45],[76,0.75],[79,1.05],[84,1.35]].forEach(([n,d])=>tone(t+d,n,0.5,'triangle',0.35,B,false)); [60,64,67].forEach(n=>tone(t+1.35,n,1.4,'sine',0.18,B,false)); }
 }
-addEventListener('pointerdown',()=>{ if(AU.ctx && AU.ctx.state==='suspended') AU.ctx.resume(); });
+/* 크롬북·휴대폰에서 소리가 멈춰 있으면 다시 깨우기 (터치·키보드·화면 복귀 때) */
+function auWake(){ if(AU.ctx && AU.ctx.state!=='running') AU.ctx.resume().catch(()=>{}); }
+['pointerdown','keydown','touchend'].forEach(ev=>addEventListener(ev,auWake,true));
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden) auWake(); });
 
 /* 직업별 성공 소리 */
 function noiseHit(t,dur,vol,type,f0,f1,q){
@@ -611,7 +619,7 @@ function bell(t,midi,vol){ [1,2.76,5.4].forEach((m,i)=>{ const c=AU.ctx, o=c.cre
 function classSfx(cls){
   if(!AU.ctx || AU.mode==='off') return;
   const t=AU.ctx.currentTime+0.02;
-  if(AU.music){ AU.music.gain.cancelScheduledValues(t); AU.music.gain.setTargetAtTime(0.06,t,0.08); AU.music.gain.setTargetAtTime(AU.mode==='all'?0.32:0,t+2.6,0.3); }
+  if(AU.music){ AU.music.gain.cancelScheduledValues(t); AU.music.gain.setTargetAtTime(0.06,t,0.08); AU.music.gain.setTargetAtTime(AU.mode==='all'?MUSIC_VOL:0,t+2.6,0.3); }
   if(cls==='hero'){ noiseHit(t+0.3,0.3,0.5,'bandpass',600,4000,2); [2600,3900].forEach(f=>sweep(t+0.6,f,f*0.98,0.5,'triangle',0.12)); noiseHit(t+0.6,0.15,0.3,'highpass',3000,6000,1);
     [[67,0.95],[72,1.1],[76,1.25],[79,1.4]].forEach(([n,d])=>tone(t+d,n,d===1.4?0.9:0.2,'square',0.1,AU.sfx,false)); [55,60,64].forEach(n=>tone(t+1.4,n,1,'triangle',0.15,AU.sfx,false)); }
   if(cls==='mage'){ for(let i=0;i<16;i++) tone(t+0.2+i*0.06,[72,76,79,83,84,88,91,95][i%8]+(i>7?12:0),0.4,'sine',0.12,AU.sfx,true); sweep(t+0.8,300,1800,0.6,'sine',0.12); pad(t+0.9,[60,67,71,76],1.6,0.05); }
@@ -714,8 +722,8 @@ function introMusicStart(){ if(!AU.ctx) return; INTRO_MUS.on=true; INTRO_MUS.i=0
   clearInterval(INTRO_MUS.timer); INTRO_MUS.timer=setInterval(()=>{
     const c=AU.ctx, spb=60/104; if(!INTRO_MUS.on) return;
     while(INTRO_MUS.next<c.currentTime+0.2){ const [n,b]=AUCLAIR[INTRO_MUS.i%AUCLAIR.length];
-      if(AU.mode==='all'){ harpsi(INTRO_MUS.next,n+12,Math.min(1.4,b*spb*1.1),0.16);
-        const bar=Math.floor(INTRO_MUS.beat/4)%16; if(INTRO_MUS.beat%2===0) harpsi(INTRO_MUS.next,AUCLAIR_BASS[bar],spb*1.8,0.12); }
+      if(AU.mode==='all'){ harpsi(INTRO_MUS.next,n+12,Math.min(1.4,b*spb*1.1),0.62);
+        const bar=Math.floor(INTRO_MUS.beat/4)%16; if(INTRO_MUS.beat%2===0) harpsi(INTRO_MUS.next,AUCLAIR_BASS[bar],spb*1.8,0.42); }
       INTRO_MUS.next+=b*spb; INTRO_MUS.beat+=b; INTRO_MUS.i++; }
   },30); }
 function introMusicStop(){ INTRO_MUS.on=false; clearInterval(INTRO_MUS.timer); }
