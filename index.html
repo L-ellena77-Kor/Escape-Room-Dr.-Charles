@@ -152,6 +152,8 @@ h1 em{font-style:normal;color:var(--accent)}
 @keyframes blk{50%{opacity:.2}}
 .ihint{font-size:12px;color:#8a6a4a;text-align:right;margin-top:2px}
 /* 전체화면 */
+#sBtn{right:auto;left:12px;background:rgba(20,27,51,.9);color:var(--text);border:1px solid var(--line)}
+#isnd{position:absolute;top:12px;left:12px;z-index:2;background:rgba(20,27,51,.85);color:var(--text);border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-weight:700;font-size:15px}
 .fsb{position:fixed;top:12px;right:12px;z-index:25;background:var(--accent);color:#231600;font-weight:900;font-size:16px;padding:10px 16px;border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,.4)}
 #bFull{background:rgba(255,178,63,.22);border-color:var(--accent)}
 #fsToast{position:fixed;left:50%;top:70px;transform:translateX(-50%);z-index:40;background:#141b33;border:2px solid var(--accent);border-radius:12px;padding:10px 16px;font-size:14px;font-weight:700;max-width:calc(100vw - 24px);text-align:center}
@@ -287,9 +289,11 @@ body.ovmode #pad, body.ovmode #act{visibility:hidden}
 <div id="copy">Copyright 2026 엘레나</div>
 
 <button id="fsBtn" class="fsb">⛶ 전체화면</button>
+<button id="sBtn" class="fsb sndb">🔊 음악 켜짐</button>
 <div id="fsToast" class="hidden"></div>
 <div id="intro" class="hidden"><canvas id="icv"></canvas>
   <button id="iskip">건너뛰기 ⏭</button>
+  <button id="isnd" class="sndb">🔊 음악 켜짐</button>
   <div id="ibox" class="hidden"><div class="inm">🎩 자크 샤를 박사 <span id="istep"></span></div><div id="itxt"></div><div class="ihint">화면을 누르면 다음 말로 넘어가요</div></div>
 </div>
 <!-- 시작 화면 -->
@@ -544,6 +548,7 @@ function auInit(){
 function applySound(){
   if(AU.ctx){ const t=AU.ctx.currentTime; AU.music.gain.setTargetAtTime(AU.mode==='all'?MUSIC_VOL:0,t,0.15); AU.sfx.gain.setTargetAtTime(AU.mode==='off'?0:0.55,t,0.05); }
   const b=document.getElementById('bSound'); if(b) b.innerHTML=SOUND_LABEL[AU.mode]+'<span class="tx">'+SOUND_TEXT[AU.mode]+'</span>';
+  document.querySelectorAll('.sndb').forEach(e=>e.textContent=SOUND_LABEL[AU.mode]+SOUND_TEXT[AU.mode]);
 }
 function cycleSound(){ AU.mode={all:'sfx',sfx:'off',off:'all'}[AU.mode]; try{localStorage.setItem('charles-sound',AU.mode);}catch(e){} auInit(); applySound(); }
 const NF=n=>440*Math.pow(2,(n-69)/12);
@@ -722,8 +727,8 @@ function introMusicStart(){ if(!AU.ctx) return; INTRO_MUS.on=true; INTRO_MUS.i=0
   clearInterval(INTRO_MUS.timer); INTRO_MUS.timer=setInterval(()=>{
     const c=AU.ctx, spb=60/104; if(!INTRO_MUS.on) return;
     while(INTRO_MUS.next<c.currentTime+0.2){ const [n,b]=AUCLAIR[INTRO_MUS.i%AUCLAIR.length];
-      if(AU.mode==='all'){ harpsi(INTRO_MUS.next,n+12,Math.min(1.4,b*spb*1.1),0.62);
-        const bar=Math.floor(INTRO_MUS.beat/4)%16; if(INTRO_MUS.beat%2===0) harpsi(INTRO_MUS.next,AUCLAIR_BASS[bar],spb*1.8,0.42); }
+      if(AU.mode==='all'){ harpsi(INTRO_MUS.next,n+12,Math.min(1.4,b*spb*1.1),0.34);
+        const bar=Math.floor(INTRO_MUS.beat/4)%16; if(INTRO_MUS.beat%2===0) harpsi(INTRO_MUS.next,AUCLAIR_BASS[bar],spb*1.8,0.23); }
       INTRO_MUS.next+=b*spb; INTRO_MUS.beat+=b; INTRO_MUS.i++; }
   },30); }
 function introMusicStop(){ INTRO_MUS.on=false; clearInterval(INTRO_MUS.timer); }
@@ -1425,7 +1430,7 @@ function fitStart(){
 }
 function fitHud(){
   const W=innerWidth, H=innerHeight, z=W>=1000? Math.max(1,Math.min(W/1366,H/768,1.7)) : 1;
-  ['hud','mission','ov','prompt','fsBtn'].forEach(id=>{ const e=$(id); if(e) e.style.zoom=z; });
+  ['hud','mission','ov','prompt','fsBtn','sBtn'].forEach(id=>{ const e=$(id); if(e) e.style.zoom=z; });
   const pz=W>=1000? Math.max(1,Math.min(W/1366,H/768,1.5)) : 1; ['pad','act'].forEach(id=>$(id).style.zoom=pz);
 }
 function fitAll(){ fitHud(); fitStart(); fitModal(); }
@@ -1921,7 +1926,7 @@ function help(){
 }
 function enterGame(first){
   $('start').classList.add('hidden');
-  ['hud','mission','pad','act'].forEach(id=>$(id).classList.remove('hidden')); $('fsBtn').classList.add('hidden');
+  ['hud','mission','pad','act'].forEach(id=>$(id).classList.remove('hidden')); $('fsBtn').classList.add('hidden'); $('sBtn').classList.add('hidden');
   const go=()=>{
     useGame();
     if(!built) build();
@@ -1960,6 +1965,10 @@ function openOutfit(){
   });
 }
 $('bSound').onclick=()=>cycleSound();
+$('sBtn').onclick=()=>{ cycleSound(); sfx('click'); };
+$('isnd').onclick=e=>{ e.stopPropagation(); cycleSound(); sfx('click'); };
+$('isnd').addEventListener('pointerdown',e=>e.stopPropagation());
+applySound();
 function openNotes(){
   const N=S.notes||{}, M=G.m, has=k=>!!N[k];
   const row=(r,txt)=>`<div class="nrow"><span class="nd" style="background:${RM[r].color}">${RM[r].dot}</span>${txt}</div>`;
