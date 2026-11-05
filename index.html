@@ -160,6 +160,7 @@ h1 em{font-style:normal;color:var(--accent)}
 /* modal */
 #modal{position:fixed;inset:0;z-index:15;background:rgba(5,8,18,.72);display:flex;align-items:center;justify-content:center;padding:14px}
 #mbox{background:var(--panel);border:1px solid var(--line);border-radius:18px;width:min(820px,100%);max-height:calc(100vh - 28px);overflow:auto;padding:22px 24px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+#certFab{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:30;background:var(--accent);color:#231600;font-weight:900;font-size:20px;padding:14px 26px;border-radius:16px;box-shadow:0 6px 20px rgba(0,0,0,.45);white-space:nowrap}
 #mclose{position:absolute;right:12px;top:12px;width:40px;height:40px;border-radius:10px;background:var(--panel2);color:var(--text);font-size:20px;border:1px solid var(--line)}
 .mt{font-size:24px;font-weight:900;margin-bottom:4px;padding-right:46px}
 .ms{color:var(--sub);font-size:15px;margin-bottom:14px;line-height:1.5}
@@ -322,6 +323,7 @@ body.ovmode #pad, body.ovmode #act{visibility:hidden}
 </div>
 
 <!-- 모달 -->
+<button id="certFab" class="hidden">🎈 증명서 보기</button>
 <div id="modal" class="hidden"><div id="mbox"><button id="mclose">✕</button><div id="mcont"></div></div></div>
 
 <script>
@@ -1409,7 +1411,7 @@ function interact(){
 
 /* ---------- 모달 ---------- */
 let modalCleanup=null;
-function openModal(html,onMount){ $('mcont').innerHTML=html; $('modal').classList.remove('hidden'); for(const k in keys)keys[k]=false; if(onMount) modalCleanup=onMount($('mcont'))||null; fitModal(); }
+function openModal(html,onMount){ certOpen=false; const cf=document.getElementById('certFab'); if(cf) cf.classList.add('hidden'); $('mcont').innerHTML=html; $('modal').classList.remove('hidden'); for(const k in keys)keys[k]=false; if(onMount) modalCleanup=onMount($('mcont'))||null; fitModal(); }
 /* 화면 크기에 맞춰 글자·창 크기 키우기 */
 function fitModal(){
   const b=$('mbox'); if($('modal').classList.contains('hidden')) return;
@@ -1436,8 +1438,11 @@ function fitHud(){
 function fitAll(){ fitHud(); fitStart(); fitModal(); }
 addEventListener('resize',()=>{ fitAll(); });
 setTimeout(fitAll,0); if(document.fonts&&document.fonts.ready) document.fonts.ready.then(fitAll);
-function closeModal(){ if(modalCleanup){modalCleanup();modalCleanup=null;} $('modal').classList.add('hidden'); }
+let certOpen=false;
+function closeModal(){ if(modalCleanup){modalCleanup();modalCleanup=null;} $('modal').classList.add('hidden');
+  if(S && S.end){ if(certOpen){ certOpen=false; $('certFab').classList.remove('hidden'); } else showCert(); } }
 $('mclose').onclick=closeModal;
+$('certFab').onclick=()=>{ sfx('click'); showCert(); };
 
 function openStation(room,role){
   const R=RM[role];
@@ -1777,6 +1782,7 @@ function showCert(){
       const g=root.querySelector('#certc').getContext('2d'); g.setTransform(2,0,0,2,0,0); drawPersonAt(g,40,94,70,'down',0,false,J.color,J.id,'short',null);
       root.querySelector('#cSave').onclick=saveCertImage;
       root.querySelector('#cMy').onclick=showSelfReview; root.querySelector('#cRev').onclick=showReview; root.querySelector('#cAgain').onclick=resetAll; });
+  certOpen=true;
 }
 const RV_LEARN=['기체를 가열하면 입자 운동이 빨라진다','가열해도 입자의 개수와 크기는 그대로다','온도가 일정하게 오르면 부피도 일정하게 커진다','생활 속 샤를 법칙 사례를 구별할 수 있다','샤를 법칙 그래프 모양을 안다'];
 const RV_NEXT=['문제를 더 꼼꼼히 읽기','계산을 한 번 더 확인하기','힌트 없이 풀어 보기','더 빨리 탈출하기'];
@@ -1790,7 +1796,7 @@ function showSelfReview(){
     <div class="rvq"><b>4. 오늘 새로 알게 된 것 (여러 개 골라도 돼요)</b><div>${chips('learn',RV_LEARN,true,R.learn)}</div></div>
     <div class="rvq"><b>5. 다음에는 이렇게 해 볼래요 (여러 개)</b><div>${chips('next',RV_NEXT,true,R.next)}</div></div>
     <div class="rvq"><b>6. 한 줄 소감 (쓰고 싶으면)</b><input id="rvMemo" maxlength="60" value="${esc(R.memo||'')}" placeholder="예) 측정실 계산이 제일 재밌었다"></div>
-    <div class="foot"><button class="big" style="width:auto" id="rvGo">📊 내 게임 리포트 보기</button></div>`;
+    <div class="foot"><button class="big2" id="rvCert">🎈 증명서로 돌아가기</button><button class="big" style="width:auto" id="rvGo">📊 내 게임 리포트 보기</button></div>`;
   openModal(render(),root=>{
     const bind=()=>{
       root.querySelectorAll('.rvs').forEach(b=>b.onclick=()=>{ R.fun=+b.dataset.n; sfx('click'); rer(); });
@@ -1798,6 +1804,7 @@ function showSelfReview(){
         if(g==='learn'||g==='next'){ const a=R[g]; const k=a.indexOf(i); if(k>=0) a.splice(k,1); else a.push(i); } else R[g]=i; rer(); });
       root.querySelector('#rvMemo').oninput=e=>{ R.memo=e.target.value; };
       root.querySelector('#rvGo').onclick=()=>{ R.memo=root.querySelector('#rvMemo').value; S.review=R; save(); showReport(); };
+      root.querySelector('#rvCert').onclick=()=>{ R.memo=root.querySelector('#rvMemo').value; S.review=R; save(); showCert(); };
     };
     const rer=()=>{ const m=root.querySelector('#rvMemo').value; R.memo=m; root.innerHTML=render(); bind(); };
     bind();
